@@ -1,0 +1,72 @@
+#!/bin/bash
+
+## Instructions counter.
+## Year: 2020
+## Author: Manel Lurbe Sempere <malursem@gap.upv.es>
+
+echo ''
+echo 'Instructions counter. Year: 2020 Author: Manel Lurbe Sempere <malursem@gap.upv.es>.'
+echo ''
+
+helpFunction()
+{
+   echo ""
+   echo "usage: sudo ./count_instructions -t time [Number in seconds] -w workloadArray [a->SPEC-2006 b->SPEC-2017 c->SPEC-ALL d->mediabench e->Real Time]"
+   exit 1 # Exit script after printing help
+}
+
+# Get the arguments
+while getopts "t:w:" opt
+do
+   case "$opt" in
+      t ) TIME="$OPTARG" ;;
+      w ) ARRAY="$OPTARG" ;;
+      ? ) helpFunction ;; # Print helpFunction in case parameter is non-existent
+   esac
+done
+
+# Print helpFunction in case parameters are empty
+if [ -z "$TIME" ] || [ -z "$ARRAY" ]
+then
+   echo "Missing arguments.";
+   helpFunction
+fi
+
+# Select the array of benckmarks to be executed
+case "$ARRAY" in 
+
+    #case 1 
+    "a") workloadArray="1 2 3 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26" ;;## SPEC 2006 all. 4 doesn't work.
+
+    #case 2 
+    "b") workloadArray="30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55" ;;# SPEC 2017 all.
+
+    #case 3 
+    "c") workloadArray="1 2 3 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55" ;;# All SPEC 2006 & 2017 (space between them 27,28,29)
+    
+    #case 4 
+    "d") workloadArray="56 57 58 59 60 61 62 63 64 65 74 75" ;;# mediabench all that works.
+    
+    #case 5 
+    "e") workloadArray="88 89 90 91 92 93 94 95 96 98 99 100" ;; # Real Time, 97 doesn't works.
+    
+    #case 6 
+    *) echo "Invalid entry for array of benckmarks."
+      helpFunction;; 
+esac
+
+if mkdir /home/malursem/working_dir/Instructions_counter_res/instructions[${TIME}] ; then
+   echo "Directory for results created."
+else
+   echo "Failed to create directory for results. It may already exist."
+fi 
+
+# Begin script in case all parameters are correct
+{ ./start_Experiments.sh; }
+
+for workload in $workloadArray
+do
+	./Instructions_counter -t $TIME -A $workload 2>> /home/malursem/working_dir/Instructions_counter_res/instructions[${TIME}]/Instructions[${workload}].txt
+done;
+
+{ ./end_Experiments.sh; }
