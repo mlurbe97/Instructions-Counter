@@ -8,10 +8,10 @@ echo ''
 echo 'Instructions_counter Copyright (C) 2020 Manel Lurbe Sempere <malursem@gap.upv.es>.'
 echo ''
 
-rm -rf ../libpfm-4.10.1/perf_examples/Instructions_counter*
+rm -rf ../libpfm4/perf_examples/Instructions_counter*
 
-if cp Makefile Instructions_counter.c ../libpfm-4.10.1/perf_examples/ ; then
-	if cd ../libpfm-4.10.1/perf_examples/ ; then
+if cp Makefile Instructions_counter.c ../libpfm4/perf_examples/ ; then
+	if cd ../libpfm4/perf_examples/ ; then
 		if make ; then
 			if cp -rf Instructions_counter ../../ ; then
 				echo "Process finished successfully."
